@@ -1,0 +1,16 @@
+{
+  "name": "emergency-response-mobile",
+  "version": "1.0.0",
+  "description": "Mobile front-end for Emergency Response Locator System",
+  "main": "mobile-server.js",
+  "scripts": {
+    "start": "node mobile-server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "axios": "^1.4.0"
+  },
+  "author": "",
+  "license": "ISC"
+}

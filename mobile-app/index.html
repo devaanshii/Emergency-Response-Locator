@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emergency Response System</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+            color: #fff;
+        }
+        
+        .main-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 24px;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+            margin: 20px auto;
+            max-width: 420px;
+            padding: 30px;
+        }
+        
+        .app-title {
+            font-weight: 700;
+            font-size: 1.8rem;
+            text-align: center;
+            margin-bottom: 30px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .location-card {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .location-card h5 {
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .location-display {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            padding: 12px;
+            resize: none;
+            width: 100%;
+        }
+        
+        .refresh-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            color: #fff;
+            font-weight: 500;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .refresh-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+            color: #fff;
+            transform: translateY(-2px);
+        }
+        
+        .emergency-section h5 {
+            font-weight: 600;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .emergency-btn {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+            border: none;
+            border-radius: 16px;
+            color: #fff;
+            font-size: 1.1rem;
+            font-weight: 600;
+            padding: 18px 24px;
+            margin-bottom: 15px;
+            text-align: left;
+            transition: all 0.3s ease;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .emergency-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
+            color: #fff;
+        }
+        
+        .emergency-btn.fire {
+            background: linear-gradient(135deg, #ffa726, #ff8a65);
+        }
+        
+        .emergency-btn.fire:hover {
+            box-shadow: 0 8px 25px rgba(255, 167, 38, 0.4);
+        }
+        
+        .emergency-btn.police {
+            background: linear-gradient(135deg, #42a5f5, #1e88e5);
+        }
+        
+        .emergency-btn.police:hover {
+            box-shadow: 0 8px 25px rgba(66, 165, 245, 0.4);
+        }
+        
+        .emergency-btn.general {
+            background: linear-gradient(135deg, #66bb6a, #43a047);
+        }
+        
+        .emergency-btn.general:hover {
+            box-shadow: 0 8px 25px rgba(102, 187, 106, 0.4);
+        }
+        
+        .emergency-btn i {
+            font-size: 1.3rem;
+            margin-right: 12px;
+        }
+        
+        .status-alert {
+            border-radius: 12px;
+            border: none;
+            font-weight: 500;
+            margin-top: 20px;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #ffffff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 10px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            opacity: 0.8;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid d-flex align-items-center justify-content-center min-vh-100">
+        <div class="main-container">
+            <div class="app-title">
+                <i class="fas fa-shield-alt"></i> Emergency Response
+            </div>
+            
+            <!-- Location Section -->
+            <div class="location-card">
+                <h5>
+                    <i class="fas fa-map-marker-alt"></i>
+                    Current Location
+                </h5>
+                <textarea id="location-display" class="location-display" rows="3" readonly placeholder="Detecting location..."></textarea>
+                <button id="refresh-location" class="btn refresh-btn">
+                    <i class="fas fa-sync-alt"></i> Refresh Location
+                </button>
+            </div>
+            
+            <!-- Emergency Buttons Section -->
+            <div class="emergency-section">
+                <h5>Select Emergency Type</h5>
+                
+                <button id="btn-medical" class="btn emergency-btn medical">
+                    <i class="fas fa-ambulance"></i>
+                    Medical Emergency
+                    <small class="d-block mt-1 opacity-75">Heart attack, injury, illness</small>
+                </button>
+                
+                <button id="btn-fire" class="btn emergency-btn fire">
+                    <i class="fas fa-fire"></i>
+                    Fire Emergency
+                    <small class="d-block mt-1 opacity-75">Building fire, forest fire, explosion</small>
+                </button>
+                
+                <button id="btn-police" class="btn emergency-btn police">
+                    <i class="fas fa-shield-alt"></i>
+                    Police Emergency
+                    <small class="d-block mt-1 opacity-75">Crime, accident, security threat</small>
+                </button>
+                
+                <button id="btn-general" class="btn emergency-btn general">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    General Emergency
+                    <small class="d-block mt-1 opacity-75">Other urgent situations</small>
+                </button>
+            </div>
+            
+            <!-- Status Messages -->
+            <div id="status-container"></div>
+            
+            <!-- Footer -->
+            <div class="footer">
+                <i class="fas fa-lock"></i> Secure Emergency Response System
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Global variables
+        let currentLocation = null;
+        const locationDisplay = document.getElementById('location-display');
+        const statusContainer = document.getElementById('status-container');
+        
+        // Display status messages
+        function showStatus(message, type = 'info', persistent = false) {
+            const alertClass = {
+                'success': 'alert-success',
+                'error': 'alert-danger',
+                'warning': 'alert-warning',
+                'info': 'alert-info',
+                'loading': 'alert-primary'
+            }[type] || 'alert-info';
+            
+            const spinner = type === 'loading' ? '<span class="loading-spinner"></span>' : '';
+            
+            statusContainer.innerHTML = `
+                <div class="alert ${alertClass} status-alert">
+                    ${spinner}${message}
+                </div>
+            `;
+            
+            if (!persistent && type !== 'loading') {
+                setTimeout(() => {
+                    statusContainer.innerHTML = '';
+                }, type === 'error' ? 8000 : 5000);
+            }
+        }
+        
+        // Get current location
+        function getCurrentLocation() {
+            showStatus('Detecting your precise location...', 'loading');
+            
+            if (!navigator.geolocation) {
+                showStatus('Geolocation is not supported by this browser', 'error');
+                locationDisplay.value = 'Geolocation not supported';
+                return;
+            }
+            
+            const options = {
+                enableHighAccuracy: true,
+                timeout: 15000,
+                maximumAge: 0
+            };
+            
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    currentLocation = {
+                        latitude: position.coords.latitude,
+                        longitude: position.coords.longitude,
+                        accuracy: position.coords.accuracy
+                    };
+                    
+                    locationDisplay.value = `📍 Latitude: ${currentLocation.latitude.toFixed(6)}
+📍 Longitude: ${currentLocation.longitude.toFixed(6)}
+📏 Accuracy: ${Math.round(currentLocation.accuracy)}m
+⏰ Updated: ${new Date().toLocaleTimeString()}`;
+                    
+                    showStatus('Location detected successfully!', 'success');
+                },
+                (error) => {
+                    let errorMessage = 'Location detection failed: ';
+                    switch(error.code) {
+                        case error.PERMISSION_DENIED:
+                            errorMessage += 'Please allow location access for emergency services';
+                            break;
+                        case error.POSITION_UNAVAILABLE:
+                            errorMessage += 'Location information is currently unavailable';
+                            break;
+                        case error.TIMEOUT:
+                            errorMessage += 'Location request timed out. Please try again';
+                            break;
+                        default:
+                            errorMessage += 'Unknown error occurred';
+                            break;
+                    }
+                    showStatus(errorMessage, 'error');
+                    locationDisplay.value = 'Location unavailable';
+                },
+                options
+            );
+        }
+        
+        // Send emergency alert
+        async function sendEmergencyAlert(type) {
+            if (!currentLocation) {
+                showStatus('Please allow location access before sending emergency alert', 'warning');
+                getCurrentLocation();
+                return;
+            }
+            
+            // Add pulse animation to button
+            const button = document.getElementById(`btn-${type}`);
+            button.classList.add('pulse');
+            
+            showStatus('Sending emergency alert to response center...', 'loading');
+            
+            const emergencyData = {
+                emergency_type: type,
+                latitude: currentLocation.latitude,
+                longitude: currentLocation.longitude,
+                phone_number: 'web-user-' + Date.now(),
+                timestamp: new Date().toISOString(),
+                description: `${type} emergency reported via Emergency Response System`,
+                user_agent: navigator.userAgent,
+                accuracy: currentLocation.accuracy
+            };
+            
+            try {
+                const response = await fetch('http://localhost:3000/api/emergency/location', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(emergencyData)
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    showStatus(`✅ Emergency alert sent successfully!
+🆔 Emergency ID: ${result.emergency_id}
+🚨 Type: ${type.toUpperCase()}
+⏰ Time: ${new Date().toLocaleString()}
+📍 Location shared with emergency services`, 'success', true);
+                    
+                    // Play success sound (if browser supports)
+                    try {
+                        const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+Pr');
+                        audio.play().catch(() => {});
+                    } catch(e) {}
+                    
+                } else {
+                    throw new Error(`Server error: ${response.status}`);
+                }
+            } catch (error) {
+                showStatus(`❌ Failed to send emergency alert: ${error.message}
+🔧 Please ensure the backend server is running on port 3000`, 'error');
+                console.error('Emergency alert error:', error);
+            } finally {
+                button.classList.remove('pulse');
+            }
+        }
+        
+        // Event listeners
+        document.getElementById('refresh-location').addEventListener('click', getCurrentLocation);
+        document.getElementById('btn-medical').addEventListener('click', () => sendEmergencyAlert('medical'));
+        document.getElementById('btn-fire').addEventListener('click', () => sendEmergencyAlert('fire'));
+        document.getElementById('btn-police').addEventListener('click', () => sendEmergencyAlert('police'));
+        document.getElementById('btn-general').addEventListener('click', () => sendEmergencyAlert('general'));
+        
+        // Initialize location on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            getCurrentLocation();
+        });
+        
+        // Add keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey || e.metaKey) {
+                switch(e.key) {
+                    case '1':
+                        e.preventDefault();
+                        sendEmergencyAlert('medical');
+                        break;
+                    case '2':
+                        e.preventDefault();
+                        sendEmergencyAlert('fire');
+                        break;
+                    case '3':
+                        e.preventDefault();
+                        sendEmergencyAlert('police');
+                        break;
+                    case '4':
+                        e.preventDefault();
+                        sendEmergencyAlert('general');
+                        break;
+                    case 'r':
+                        e.preventDefault();
+                        getCurrentLocation();
+                        break;
+                }
+            }
+        });
+    </script>
+</body>
+</html>
